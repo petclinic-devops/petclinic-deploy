@@ -13,12 +13,25 @@ spec:
       labels:
         app: discovery-server
     spec:
+      initContainers:
+        - name: wait-for-config-server
+          image: busybox
+          command:
+            - sh
+            - -c
+            - |
+              until nc -z config-server 8888; do
+                echo "Waiting for config-server..."
+                sleep 2
+              done
       containers:
         - name: discovery-server
           image: springcommunity/spring-petclinic-discovery-server
           ports:
             - containerPort: 8761
           env:
+            - name: SPRING_CLOUD_CONFIG_URI
+              value: "http://config-server.petclinic.svc.cluster.local:8888"
             - name: MANAGEMENT_ZIPKIN_TRACING_ENDPOINT
               value: "http://tracing-server.petclinic.svc.cluster.local:9411/api/v2/spans"
             - name: MANAGEMENT_TRACING_SAMPLING_PROBABILITY
