@@ -14,9 +14,16 @@ spec:
         app: discovery-server
     spec:
       initContainers:
-      - name: wait-for-config
-      image: busybox
-      command: ['sh', '-c', 'until nc -z config-server 8888; do echo waiting; sleep 2; done;']
+        - name: wait-for-config
+          image: busybox
+          command:
+            - sh
+            - -c
+            - |
+              until nc -z config-server.petclinic.svc.cluster.local 8888; do
+                echo "Waiting for config-server..."
+                sleep 2
+              done
       containers:
         - name: discovery-server
           image: springcommunity/spring-petclinic-discovery-server
