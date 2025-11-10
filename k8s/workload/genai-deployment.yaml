@@ -17,21 +17,26 @@ spec:
         - name: genai-service
           image: springcommunity/spring-petclinic-genai-service
           env:
+            # Secret optional: nếu chưa tạo secret, container vẫn chạy
             - name: OPENAI_API_KEY
               valueFrom:
                 secretKeyRef:
                   name: genai-secret
                   key: OPENAI_API_KEY
+                  optional: true
             - name: AZURE_OPENAI_KEY
               valueFrom:
                 secretKeyRef:
                   name: genai-secret
                   key: AZURE_OPENAI_KEY
+                  optional: true
             - name: AZURE_OPENAI_ENDPOINT
               valueFrom:
                 secretKeyRef:
                   name: genai-secret
                   key: AZURE_OPENAI_ENDPOINT
+                  optional: true
+            # Zipkin tracing
             - name: MANAGEMENT_ZIPKIN_TRACING_ENDPOINT
               value: "http://tracing-server.petclinic.svc.cluster.local:9411/api/v2/spans"
             - name: MANAGEMENT_TRACING_SAMPLING_PROBABILITY
@@ -53,3 +58,4 @@ spec:
   ports:
     - port: 8084
       targetPort: 8084
+  type: ClusterIP
