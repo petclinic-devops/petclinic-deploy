@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: api-gateway
   namespace: petclinic
+  labels:
+    app: api-gateway
 spec:
   replicas: 1
   selector:
@@ -15,27 +17,16 @@ spec:
     spec:
       containers:
         - name: api-gateway
-          image: springcommunity/spring-petclinic-api-gateway
+          image: ntt1902/spring-petclinic-api-gateway
           ports:
             - containerPort: 8080
           env:
-            - name: MANAGEMENT_ZIPKIN_TRACING_ENDPOINT
-              value: "http://tracing-server.petclinic.svc.cluster.local:9411/api/v2/spans"
-            - name: MANAGEMENT_TRACING_SAMPLING_PROBABILITY
-              value: "1.0"
-          resources:
-            limits:
-              memory: "512Mi"
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: api-gateway
-  namespace: petclinic
-spec:
-  type: LoadBalancer
-  selector:
-    app: api-gateway
-  ports:
-    - port: 80
-      targetPort: 8080
+            - name: JAVA_OPTS
+              value: "-Dserver.address=0.0.0.0"   
+          readinessProbe:                        
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+      restartPolicy: Always

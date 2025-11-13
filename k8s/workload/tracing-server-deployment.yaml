@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tracing-server
+  namespace: petclinic
+  labels:
+    app: tracing-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tracing-server
+  template:
+    metadata:
+      labels:
+        app: tracing-server
+    spec:
+      containers:
+      - name: tracing-server
+        image: mszarlinski/spring-petclinic-tracing-server
+        command:
+          - ./wait-for-it.sh
+          - discovery-server:8761
+          - --timeout=60
+          - --
+          - java
+          - -Djava.security.egd=file:/dev/./urandom
+          - -jar
+          - /app.jar
+        ports:
+        - containerPort: 9411
+      restartPolicy: Always
