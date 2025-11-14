@@ -199,8 +199,8 @@ kubectl port-forward -n kube-prometheus-stack svc/kube-prometheus-stack-grafana 
 - Password: prom-operator
 <img width="7668" height="3996" alt="image" src="https://github.com/user-attachments/assets/779239f7-11a8-4e4a-a6d0-6d51856d7c49" />
 
-
 # TÀI LIỆU THAM KHẢO
 - https://spacelift.io/blog/prometheus-kubernetes
 - https://grafana.com/docs/grafana/latest/setup-grafana/installation/helm/
 - https://www.youtube.com/watch?v=9ZUy3oHNgh8&t=614s
+
